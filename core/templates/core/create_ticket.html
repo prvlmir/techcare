@@ -1,0 +1,61 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Нова заявка | TechCare{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            
+            <a href="{% url 'dashboard_user' %}" class="back-link">
+                <i class="bi bi-arrow-left"></i> Повернутись назад
+            </a>
+
+            <h1 class="page-title-large">Створити нову заявку</h1>
+            
+            <div class="form-card">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label class="form-label-bold">Створити нову заявку</label>
+                        <input type="text" name="title" class="form-control-custom" placeholder="Наприклад: Не працює принтер у 204 кабінеті" required>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label class="form-label-bold">Обладнання</label>
+                            <input type="text" name="equipment" class="form-control-custom" placeholder="Наприклад: Ноутбук HP">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-bold">Терміновість</label>
+                            {{ form.priority }}
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label-bold">Детальний опис проблеми</label>
+                        <textarea name="description" class="form-control-custom" rows="5" placeholder="Опишіть, що сталося, та кроки для відтворення проблеми..." required></textarea>
+                    </div>
+                    
+                    <p class="text_muted mb-4" style="font-size: 13px;">
+                        Будь ласка, додайте коди помилок, якщо вони є.
+                    </p>
+
+                    <div class="d-flex justify-content-end gap-3 pt-3" style="border-top: 1px solid #2c2b30;">
+                        <a href="{% url 'dashboard_user' %}" class="btn-outline-cancel text-decoration-none">
+                            Скасувати
+                        </a>
+                        <button type="submit" class="btn-submit-small">
+                            Відправити заявку
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

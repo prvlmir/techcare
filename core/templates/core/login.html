@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вхід | TechCare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+</head>
+<body>
+
+    <div class="gradient-line"></div>
+
+    <div class="brand-section d-none d-lg-flex">
+        <img src="{% static 'core/img/logo.png' %}" alt="TechCare" class="brand-logo">
+        <div class="brand-title">TechCare</div>
+    </div>
+
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <div class="col-lg-6"></div>
+
+            <div class="col-lg-6">
+                <div class="login-container-right">
+                    <div class="login-card">
+                        <h2 class="login-title">Увійдіть у систему</h2>
+                            {% if form.errors %}
+                                <div class="alert alert-danger py-2" style="font-size: 14px;">
+                                    Невірний Email або пароль. Спробуйте ще раз.
+                                </div>
+                            {% endif %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="input-group-custom">
+                                <i class="bi bi-envelope input-icon"></i>
+                                <input type="text" name="username" class="form-control-custom" placeholder="example@gmail.com" required>
+                            </div>
+
+                            <div class="input-group-custom">
+                                <i class="bi bi-lock input-icon"></i>
+                                <input type="password" name="password" id="passwordInput" class="form-control-custom" placeholder="••••••••••••••••" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword()">
+                                    <i class="bi bi-eye-slash" id="toggleIcon"></i>
+                                </button>
+                            </div>
+
+                            <div class="form-options">
+                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 13px;">
+                                    <input type="checkbox" class="custom-checkbox me-2"> Запам'ятати пароль
+                                </label>
+                                <a href="#" class="link-purple" style="font-size: 13px;">Забули пароль?</a>
+                            </div>
+
+                            <button type="submit" class="btn-gradient">УВІЙТИ</button>
+
+                            <div class="register-link">
+                                <a href="{% url 'register' %}" class="link-purple">Зареєструватися</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const pw = document.getElementById('passwordInput');
+            const icon = document.getElementById('toggleIcon');
+            if (pw.type === 'password') {
+                pw.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                pw.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        }
+    </script>
+</body>
+</html>

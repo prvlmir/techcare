@@ -1,0 +1,87 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Мої заявки | TechCare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    
+    <div class="dashboard-header">
+        <div class="header-text">
+            <h1>Мої заявки</h1>
+            <p class="text_muted m-0">Керуйте своїми запитами до IT-відділу</p>
+        </div>
+        <a href="{% url 'create_ticket' %}" class="btn-gradient text-decoration-none px-4 py-2" style="width: auto; margin: 0; font-size: 14px;">
+            + Створити заявку
+        </a>
+    </div>
+
+    <div class="row stats-row g-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <span class="stat-label">Всього заявок</span>
+                <div class="stat-number">{{ total_count }}</div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="stat-card">
+                <span class="stat-label">Активні</span>
+                <div class="stat-number text-primary">{{ active_count }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <span class="stat-label">Вирішені</span>
+                <div class="stat-number text-success">{{ closed_count }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <h3 class="section-title">Останні активності</h3>
+        
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Тема</th>
+                        <th>Статус</th>
+                        <th>Дата</th>
+                        <th class="text-end">Дія</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr>
+                        <td class="text-muted">#{{ ticket.id }}</td>
+                        <td style="font-weight: 500;">{{ ticket.title }}</td>
+                        <td>
+                            {% if ticket.status == 'Open' %}
+                                <span class="status-badge status-blue">Нова</span>
+                            {% elif ticket.status == 'In Progress' %}
+                                <span class="status-badge status-yellow">В роботі</span>
+                            {% else %}
+                                <span class="status-badge status-green">Закрито</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted">{{ ticket.created_at|date:"d.m.Y H:i" }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'ticket_detail' ticket.id %}" class="link-purple" style="font-size: 14px;">Відкрити</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            У вас поки немає створених заявок
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

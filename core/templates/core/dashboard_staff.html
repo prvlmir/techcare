@@ -1,0 +1,163 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Панель персоналу | TechCare{% endblock %}
+
+{% block content %}
+<div class="py-2">
+    
+    <div class="row stats-row g-3 mb-5">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span class="stat-label">Всього заявок</span>
+                <div class="stat-number">{{ total_count }}</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span class="stat-label">Нові</span>
+                <div class="stat-number text-primary">{{ new_count }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span class="stat-label">Критичні</span>
+                <div class="stat-number" style="color: #ff6b6b;">{{ critical_count }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span class="stat-label">Час відповіді</span>
+                <div class="stat-number" style="color: #2ecc71;">15хв</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filters-bar">
+        <div class="d-flex gap-3">
+            <input type="text" class="search-input" placeholder="Пошук...">
+            
+            <select class="filter-select">
+                <option value="">Всі статуси</option>
+                <option value="Open">Нова</option>
+                <option value="In Progress">В роботі</option>
+                <option value="Closed">Закрито</option>
+            </select>
+        </div>
+        
+        <button class="btn-export">Експорт</button>
+    </div>
+
+    <div class="table-card">
+        <div class="table-responsive">
+            
+            {% if current_tab == 'inventory' %}
+                <table class="custom-table">
+                    <thead>
+                    <tr>
+                        <th>Інв. Номер</th> <th>Тип</th>
+                        <th>Модель</th>
+                        <th>Статус</th>
+                        <th>Користувач</th> </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in inventory %}
+                        <tr>
+                            <td>#{{ item.id }}</td> 
+                            <td>{{ item.type }}</td>
+                            <td>{{ item.model }}</td>
+                            <td>
+                                <span class="badge {% if item.status == 'Active' %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {{ item.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if item.assigned_to %}
+                                    {{ item.assigned_to.username }} {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                Обладнання не знайдено
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">ID</th>
+                            <th>ТЕМА</th>
+                            <th style="width: 140px;">ПРИОРІТЕТ</th>
+                            <th style="width: 140px;">СТАТУС</th>
+                            <th>АВТОР</th>
+                            
+                            {% if current_tab != 'active' %}
+                                <th style="text-align: right;">СТВОРЕНО</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in tickets %}
+                        <tr>
+                            <td class="text-muted">#{{ ticket.id }}</td>
+                            
+                            <td style="font-weight: 600;">
+                                <a href="{% url 'ticket_detail' ticket.id %}" class="text-white text-decoration-none">
+                                    {{ ticket.title }}
+                                </a>
+                            </td>
+
+                            <td>
+                                {% if ticket.priority == 'High' %}
+                                    <span class="badge-priority priority-high">Високий</span>
+                                {% elif ticket.priority == 'Medium' %}
+                                    <span class="badge-priority priority-medium">Середній</span>
+                                {% else %}
+                                    <span class="badge-priority priority-low">Низький</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if ticket.status == 'Open' %}
+                                    <span class="status-badge status-blue">Нова</span>
+                                {% elif ticket.status == 'In Progress' %}
+                                    <span class="status-badge status-yellow">В роботі</span>
+                                {% else %}
+                                    <span class="status-badge status-green">Закрито</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-muted" style="font-size: 14px;">
+                                {{ ticket.created_by.first_name|default:ticket.created_by.username }}
+                            </td>
+
+                            {% if current_tab != 'active' %}
+                                <td class="text-muted text-end">{{ ticket.created_at|date:"d.m H:i" }}</td>
+                            {% endif %}
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="{% if current_tab == 'active' %}5{% else %}6{% endif %}" class="text-center py-5 text-muted">
+                                Заявок у цій категорії немає.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            
+        </div>
+    </div>
+
+</div>
+{% endblock %}
